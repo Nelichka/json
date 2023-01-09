@@ -1,8 +1,16 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Basket {
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+
+
+@JsonPropertyOrder({"prices", "products", "totalBasket", "sum", "isFilled"})
+public class Basket implements Serializable {
     private int[] prices;
     private String[] products;
     private int[] totalBasket;
@@ -24,6 +32,8 @@ public class Basket {
         this.isFilled = isFilled;
     }
 
+    public Basket() {
+    }
 
     public void addToCart(int productNum, int amount) {
         totalBasket[productNum] += amount;
@@ -64,39 +74,16 @@ public class Basket {
         }
     }
 
-    public static Basket loadFromTxtFile(File textFile) throws IOException {
+    public static Basket loadFromTxtFile(File textFile) throws IOException, ParseException {
 
-        String[] productsInBasket;
-        String[] productNames;
-        String[] pricesInBasket;
-        String[] isProduct;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(textFile))) {
-            if (textFile.exists()) {
-                productsInBasket = reader.readLine().split(" ");
-                productNames = reader.readLine().split(" ");
-                pricesInBasket = reader.readLine().split(" ");
-                int[] pricesInt = new int[pricesInBasket.length];
-                for (int i = 0; i < pricesInBasket.length; i++) {
-                    pricesInt[i] = Integer.parseInt(pricesInBasket[i]);
-                }
-                Basket basket = new Basket(pricesInt, productNames);
-                for (int i = 0; i < productsInBasket.length; i++) {
-                    basket.totalBasket[i] = Integer.parseInt(productsInBasket[i]);
-                }
-
-                for (int i = 0; i < productNames.length; i++) {
-                    basket.products[i] = productNames[i];
-                }
-
-                isProduct = reader.readLine().split(" ");
-                for (int i = 0; i < isProduct.length; i++) {
-                    basket.isFilled[i] = Boolean.parseBoolean(isProduct[i]);
-                }
-                return basket;
-            } else {
-                return new Basket(null, null, null, null);
-            }
+        JSONParser parser = new JSONParser();
+        if (textFile.exists()) {
+            ObjectMapper mapper = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+            Object obj = parser.parse(new FileReader(textFile));
+            String result = mapper.writeValueAsString(obj);
+            return mapper.readValue(result, Basket.class);
+        } else {
+            return new Basket(null, null, null, null);
         }
     }
 }
