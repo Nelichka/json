@@ -1,12 +1,14 @@
 import java.io.*;
+import java.util.Scanner;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.google.gson.Gson;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 
 
 @JsonPropertyOrder({"prices", "products", "totalBasket", "sum", "isFilled"})
@@ -51,6 +53,37 @@ public class Basket implements Serializable {
         }
         System.out.println("Общая стоимость = " + sum + " руб.");
     }
+
+
+    public void saveJson(File file) throws IOException {
+        try (PrintWriter out = new PrintWriter(file)) {
+            Gson gson = new Gson();
+            String json = gson.toJson(this); // "{ products: [..."
+            out.println(json);
+        }
+    }
+
+    public static Basket loadFromJson(File file) throws IOException {
+        try (Scanner scanner = new Scanner(file)) {
+            Gson gson = new Gson();
+            String json = scanner.nextLine();
+            Basket basket = gson.fromJson(json, Basket.class);
+            return basket;
+        }
+    }
+
+    public void saveBin(File file) throws IOException {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+            out.writeObject(this);
+        }
+    }
+
+    public static Basket loadFromBin(File file) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+            return (Basket) in.readObject();
+        }
+    }
+
 
     public void saveTxt(File textFile) throws IOException {
         textFile = new File(textFile.toURI());
