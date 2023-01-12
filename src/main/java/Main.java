@@ -75,7 +75,7 @@ public class Main {
                 .compile("/config/load/format")
                 .evaluate(doc);
 
-        //   Basket basket;
+        Basket basket;
         if (doLoad) {
             File loadFile = new File(loadFileName);
             switch (loadFormat) {
@@ -90,7 +90,7 @@ public class Main {
                     break;
             }
         } else {
-            basket = new Basket(null, null);
+            basket = new Basket(newPrices, newProducts);
         }
 
         boolean doSave = Boolean.parseBoolean(xPath
@@ -102,6 +102,8 @@ public class Main {
         String saveFormat = xPath
                 .compile("/config/save/format")
                 .evaluate(doc);
+
+        Basket basket;
         if (doSave) {
             File saveFile = new File(SaveFileName);
             switch (saveFormat) {
@@ -116,10 +118,18 @@ public class Main {
                     break;
             }
         } else {
-            basket = new Basket(null, null);
+            basket = new Basket(newPrices, newProducts);
         }
-    }
 
+        boolean doLog = Boolean.parseBoolean(xPath
+                .compile("/config/log/enabled")
+                .evaluate(doc));
+        String logFileName = xPath
+                .compile("/config/log/fileName")
+                .evaluate(doc);
+
+
+    }
 }
 
 
