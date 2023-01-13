@@ -48,9 +48,9 @@ public class Main {
 
         File file = new File("basket.json");
         Basket newBasket = Basket.loadFromTxtFile(file);
-        // basket.saveTxt(new File("basket.txt"));
+
         newBasket.addToCart(2, 5);
-        // basket.saveTxt(new File("basket.txt"));
+
         newBasket.printCart();
 
         ClientLog allLog = new ClientLog();
@@ -75,22 +75,22 @@ public class Main {
                 .compile("/config/load/format")
                 .evaluate(doc);
 
-        Basket basket;
+        Basket loadedBasket = new Basket();
         if (doLoad) {
             File loadFile = new File(loadFileName);
             switch (loadFormat) {
                 case "json":
-                    basket = Basket.loadFromJson(loadFile);
+                    loadedBasket = Basket.loadFromJson(loadFile);
                     break;
                 case "txt":
-                    basket = Basket.loadFromTxtFile(loadFile);
+                    loadedBasket = Basket.loadFromTxtFile(loadFile);
                     break;
                 case "bin":
-                    basket = Basket.loadFromBin(loadFile);
+                    loadedBasket = Basket.loadFromBin(loadFile);
                     break;
             }
         } else {
-            basket = new Basket(newPrices, newProducts);
+            loadedBasket = new Basket(newPrices, newProducts);
         }
 
         boolean doSave = Boolean.parseBoolean(xPath
@@ -103,82 +103,29 @@ public class Main {
                 .compile("/config/save/format")
                 .evaluate(doc);
 
-        Basket basket;
         if (doSave) {
             File saveFile = new File(SaveFileName);
             switch (saveFormat) {
                 case "json":
-                    basket = Basket.saveJson(saveFile);
+                    loadedBasket.saveJson(saveFile);
                     break;
                 case "txt":
-                    basket = Basket.saveTxt(saveFile);
+                    loadedBasket.saveTxt(saveFile);
                     break;
                 case "bin":
-                    basket = Basket.saveBin(saveFile);
+                    loadedBasket.saveBin(saveFile);
                     break;
             }
         } else {
             basket = new Basket(newPrices, newProducts);
         }
 
-        boolean doLog = Boolean.parseBoolean(xPath
-                .compile("/config/log/enabled")
-                .evaluate(doc));
-        String logFileName = xPath
-                .compile("/config/log/fileName")
-                .evaluate(doc);
-
 
     }
 }
 
 
-//        read(doc, "load");
-//        if (enabled.equals("true")) {
-//            if (jsonFile.exists()) {
-//                if (format.equals("json")) {
-//                    basket = Basket.loadFromTxtFile(new File("basket.json"));
-//                    basket.printCart();
-//                } else {
-//                    basket = Basket.loadFromTxtFile(new File("basket.json"));
-//                    basket.printCart();
-//                }
-//            }
-//        }
-//
-//        basket.printCart();
-//
-//
-//        read(doc, "save");
-//        if (enabled.equals("true")) {
-//            if (format.equals("json")) {
-//                basket.saveTxt(new File("basket.json"));
-//            } else {
-//                basket.saveTxt(new File("basket.txt"));
-//            }
-//            log.exportAsCSV(csvFile);
-//        }
-//        read(doc, "log");
-//        if (enabled.equals("true")) {
-//            log.exportAsCSV(new File(fileName));
-//        }
-//    }
-//
-//    private static void read(Document node, String name) {
-//        NodeList nodeList = node.getElementsByTagName(name);
-//        for (int i = 0; i < nodeList.getLength(); i++) {
-//            Node node_ = nodeList.item(i);
-//            if (Node.ELEMENT_NODE == node_.getNodeType()) {
-//                Element element = (Element) node_;
-//                enabled = element.getElementsByTagName("enabled").item(0).getTextContent();
-//                fileName = element.getElementsByTagName("fileName").item(0).getTextContent();
-//                if (!name.equals("log")) {
-//                    format = element.getElementsByTagName("format").item(0).getTextContent();
-//                }
-//            }
-//        }
-//    }
-//}
+
 
 
 

@@ -1,1 +1,1 @@
-{"prices":[100,200,300,150],"products":["Хлеб","Яблоки","Молоко","Сыр"],"totalBasket":[4,0,0,7],"sum":1450,"isFilled":[true,false,false,true]}
+{"prices":[100,200,300,150],"products":["Хлеб","Яблоки","Молоко","Сыр"],"totalBasket":[0,0,0,0],"sum":0,"isFilled":[false,false,false,false]}
